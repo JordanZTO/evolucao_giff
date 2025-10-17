@@ -119,6 +119,34 @@ Todos os dados locais são salvos via **SharedPreferences**:
 
 ---
 
+## 🔑 Caso os GIFs não apareçam
+
+Se ao executar o app **nenhum GIF for exibido**, pode ser que a **chave da API do Giphy** usada no projeto tenha expirado ou atingido o limite de uso gratuito.
+
+Para corrigir:
+
+1. Acesse [https://developers.giphy.com/](https://developers.giphy.com/).
+2. Crie uma conta (ou entre na sua).
+3. Gere uma nova **API Key**.
+4. Substitua a chave antiga no arquivo:
+
+   ```
+   lib/services/giphy_service.dart
+   ```
+
+   Exemplo:
+
+   ```dart
+   static const String _apiKey = 'SUA_NOVA_CHAVE_AQUI';
+   ```
+5. Salve o arquivo e rode novamente o app:
+
+   ```bash
+   flutter run
+   ```
+
+---
+
 ## 🧩 Dependências Principais
 
 * `http` → Requisições para a API do Giphy.
@@ -135,9 +163,3 @@ Todos os dados locais são salvos via **SharedPreferences**:
 * ✅ Tema claro/escuro
 * ✅ Configurações persistentes
 
----
-
-## ✨ Autor
-
-**Jefferson Speck**
-Projeto desenvolvido como parte do aprendizado em Flutter, focando em **arquitetura modular**, **persistência de dados** e **UX responsiva**.
