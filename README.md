@@ -58,14 +58,13 @@ Todos os dados locais são salvos via **SharedPreferences**:
 * GIFs Favoritos
 * Histórico de buscas
 * Tema (claro/escuro)
-* Preferências de idioma, rating e autoplay
+* Rating e autoplay
 
 ### ⚙️ Tela de Configurações (`SettingsPage`)
 
 * Define preferências como:
 
   * Classificação de conteúdo (`Leve`, `Moderado`, `Sensível`, `Altamente Sensível`)
-  * Idioma
   * Quantidade de GIFs exibidos
   * Atualização automática
   * Tema escuro
