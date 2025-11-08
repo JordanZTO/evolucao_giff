@@ -21,7 +21,6 @@ class _RandomGifPageState extends State<RandomGifPage> {
   List<Map<String, dynamic>> _gifList = [];
   List<String> _favorites = [];
   String _rating = 'g';
-  String _language = 'pt';
   int _itemsPerPage = 3;
   bool _autoRefresh = false;
   bool _isLoading = false;
@@ -37,7 +36,7 @@ class _RandomGifPageState extends State<RandomGifPage> {
     _init();
   }
 
-  Future _init() async {
+  Future<void> _init() async {
     await _initRandomId();
     await _loadPreferences();
     await _loadFavorites();
@@ -54,7 +53,6 @@ class _RandomGifPageState extends State<RandomGifPage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _rating = prefs.getString('rating') ?? 'g';
-      _language = prefs.getString('language') ?? 'pt';
       _itemsPerPage = prefs.getInt('itemsPerPage') ?? 3;
       _autoRefresh = prefs.getBool('autoRefresh') ?? false;
     });
@@ -74,7 +72,7 @@ class _RandomGifPageState extends State<RandomGifPage> {
 
   void _startAutoRefresh() {
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 10), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (_autoRefresh) _fetchRandomGifs();
     });
   }
@@ -91,18 +89,18 @@ class _RandomGifPageState extends State<RandomGifPage> {
       final gifs = <Map<String, dynamic>>[];
 
       for (int i = 0; i < _itemsPerPage; i++) {
-        final data = await _repository.getRandomGif(
+        final Map<String, dynamic>? data = await _repository.getRandomGif(
           tag: _tagController.text.trim(),
           rating: _rating,
           randomId: _randomId!,
-          language: _language,
         );
 
         if (data != null) {
           gifs.add(data);
-          await _addToHistory(
-            data['images']?['downsized_large']?['url'] ?? '',
-          );
+          final String url = data['images']?['downsized_large']?['url'] ?? '';
+          if (url.isNotEmpty) {
+            await _addToHistory(url);
+          }
         }
       }
 
@@ -149,19 +147,26 @@ class _RandomGifPageState extends State<RandomGifPage> {
     });
   }
 
-  Future<void> _openSettings() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SettingsPage()),
-    );
+Future<void> _openSettings() async {
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const SettingsPage()),
+  );
 
-    if (result is Map) {
-      await _loadPreferences();
-      if (result.containsKey('darkMode')) {
-        widget.onThemeChanged?.call(result['darkMode']);
-      }
+  if (result is Map) {
+    await _loadPreferences();
+
+    if (_autoRefresh) {
+      _startAutoRefresh();
+    } else {
+      _timer?.cancel();
+    }
+
+    if (result.containsKey('darkMode')) {
+      widget.onThemeChanged?.call(result['darkMode']);
     }
   }
+}
 
   Future<void> _openHistory() async {
     final selected = await Navigator.push(
@@ -176,18 +181,19 @@ class _RandomGifPageState extends State<RandomGifPage> {
     }
   }
 
-Future<void> _openFavorites() async {
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(builder: (_) => const FavoritesPage()),
-  );
+  Future<void> _openFavorites() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const FavoritesPage()),
+    );
 
-  if (result is Map && result.containsKey('favorites')) {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('gifFavorites', List<String>.from(result['favorites']));
-    setState(() {});
+    if (result is Map && result.containsKey('favorites')) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(
+          'gifFavorites', List<String>.from(result['favorites']));
+      setState(() {});
+    }
   }
-}
 
   @override
   void dispose() {

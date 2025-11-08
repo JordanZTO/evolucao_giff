@@ -2,21 +2,21 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GiphyService {
-  static const String _apiKey = 'KMaGeMMll3HkrBrzWJO5GBvGcXswl7Cb';
+  static const String _apiKey = 'VwaOKSc2bICikeiJiTDxjEpfwUSCNTjL';
   static const String _baseUrl = 'https://api.giphy.com/v1/gifs';
 
-  Future<Map<String, dynamic>?> getRandomGif({
-    String tag = '',
-    String rating = 'g',
-    required String randomId,
-    String language = 'en',
-  }) async {
-    final url = Uri.parse(
-      '$_baseUrl/random?api_key=$_apiKey'
-      '&tag=$tag'
-      '&rating=$rating'
-      '&random_id=$randomId',
-    );
+Future<Map<String, dynamic>?> getRandomGif({
+  String tag = '',
+  String rating = 'g',
+  required String randomId,
+}) async {
+  final url = Uri.parse(
+    '$_baseUrl/random?api_key=$_apiKey'
+    '&tag=$tag'
+    '&rating=$rating'
+    '&random_id=$randomId',
+  );
+
 
     final response = await http.get(url);
 

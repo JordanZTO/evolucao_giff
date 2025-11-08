@@ -10,7 +10,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   String _rating = 'g';
-  String _language = 'pt';
   int _itemsPerPage = 3;
   bool _autoRefresh = false;
   bool _darkMode = false;
@@ -25,7 +24,6 @@ class _SettingsPageState extends State<SettingsPage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _rating = prefs.getString('rating') ?? 'g';
-      _language = prefs.getString('language') ?? 'pt';
       _itemsPerPage = prefs.getInt('itemsPerPage') ?? 3;
       _autoRefresh = prefs.getBool('autoRefresh') ?? false;
       _darkMode = prefs.getBool('darkMode') ?? false;
@@ -35,7 +33,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _savePrefs() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('rating', _rating);
-    await prefs.setString('language', _language);
     await prefs.setInt('itemsPerPage', _itemsPerPage);
     await prefs.setBool('autoRefresh', _autoRefresh);
     await prefs.setBool('darkMode', _darkMode);
@@ -63,18 +60,6 @@ class _SettingsPageState extends State<SettingsPage> {
               DropdownMenuItem(value: 'r', child: Text('Altamente sensível')),
             ],
             onChanged: (v) => setState(() => _rating = v ?? 'g'),
-          ),
-          const SizedBox(height: 16),
-          const Text('Idioma', style: TextStyle(fontWeight: FontWeight.bold)),
-          DropdownButtonFormField<String>(
-            value: _language,
-            items: const [
-              DropdownMenuItem(value: 'pt', child: Text('Português')),
-              DropdownMenuItem(value: 'en', child: Text('Inglês')),
-              DropdownMenuItem(value: 'es', child: Text('Espanhol')),
-              DropdownMenuItem(value: 'fr', child: Text('Francês')),
-            ],
-            onChanged: (v) => setState(() => _language = v ?? 'pt'),
           ),
           const SizedBox(height: 16),
           const Text(
