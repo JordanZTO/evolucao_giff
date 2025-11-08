@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GiphyService {
-  static const String _apiKey = 'VwaOKSc2bICikeiJiTDxjEpfwUSCNTjL';
+  static const String _apiKey = 'KMaGeMMll3HkrBrzWJO5GBvGcXswl7Cb';
   static const String _baseUrl = 'https://api.giphy.com/v1/gifs';
 
 Future<Map<String, dynamic>?> getRandomGif({
